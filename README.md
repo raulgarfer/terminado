@@ -1,0 +1,2 @@
+# terminado
+primer juego terminado
