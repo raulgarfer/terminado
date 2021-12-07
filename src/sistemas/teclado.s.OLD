@@ -1,0 +1,51 @@
+.module teclado.s
+
+.include "cpctelera.h.s"
+.include "teclado.h.s"
+.include "datos/macros.s"
+teclado_init::
+	ld (array_teclado),ix
+ret
+
+escanea_teclado::
+	array_teclado =.+2
+	ld ix,#0x0000
+	;ld ix,#jugador
+	ld e_vx(ix),#0
+	ld e_vy(ix),#0
+	call cpct_scanKeyboard_asm
+ld hl,#Key_O
+call cpct_isKeyPressed_asm
+	jr z,o_no_pulsada
+	ld e_vx(ix),#-1
+	ld hl,#_hero_left
+		ld e_sprite+0(ix),l 
+	inc hl
+		ld e_sprite+1(ix),h
+o_no_pulsada:
+ld hl,#Key_P
+call cpct_isKeyPressed_asm
+	jr z,p_no_pulsada
+	ld e_vx(ix),#1
+		ld hl,#_hero_right
+		ld e_sprite+0(ix),l 
+	inc hl
+		ld e_sprite+1(ix),h
+p_no_pulsada:
+ld hl,#Key_Q
+call cpct_isKeyPressed_asm
+	jr z,q_no_pulsada
+	ld e_vy(ix),#-2
+q_no_pulsada:
+ld hl,#Key_A
+call cpct_isKeyPressed_asm
+	jr z,a_no_pulsada
+	ld e_vy(ix),#2
+a_no_pulsada:
+	ld hl,#Key_Esc
+	call cpct_isKeyPressed_asm
+	jr z,fin_teclado
+		jp _main
+fin_teclado:
+
+ret
